@@ -1,0 +1,128 @@
+---
+title: "NXP Datasheet Commonality"
+output: html_notebook
+---
+
+To run it, use the following as a template. Before running do the following.
+Go into the CSV and perform the following:
+1. Add a label the first cell (matrix[0][0]) to 'category_1'
+2. Change the names of the titles if it is too long
+
+```{r, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(RColorBrewer)
+library(gcookbook)
+```
+
+MAJOR CATEGORIES
+Figure 1: Cross-Sector of Sharing Semiconductor Chips (Datasheets and Datasheet Families), Example - NXP Microprocessors and Microcontrol Units
+```{r, warning = FALSE, message = FALSE}
+# load dataset
+data <- read.csv('major_categories.csv')
+
+data <- data %>% 
+  select(-c("Automotive")) %>% # change this to the column populated of 0's if exists
+  pivot_longer(cols = -c(category_1), names_to = "category_2",  values_to = "overlap") %>% 
+  mutate(overlap = case_when(
+    overlap == 0 ~ NA_integer_, 
+    TRUE ~ overlap
+  )) 
+
+mypal <- c(brewer.pal(9, "YlOrRd"), brewer.pal(9, "YlOrBr")[9])
+
+data %>% 
+  group_by(category_2) %>%
+  mutate(max_overlap = max(overlap)) %>%
+  ggplot(aes(reorder(category_1, max_overlap), category_2, fill = as.factor(overlap), label = overlap)) + 
+  geom_point(shape = 21, aes(size=overlap)) + 
+  geom_text(vjust=-2) + 
+  guides(fill = FALSE, size = FALSE) + 
+  labs(x = "", y = "") + 
+  theme_minimal() + 
+  scale_fill_manual(values = mypal)  +
+  scale_x_discrete(position = "top") + 
+  ggtitle("Figure 1: Cross-Sector of Sharing Semiconductor Chips 
+          (Datasheets and Datasheet Families) 
+          Example from NXP Microprocessors and Microcontrol Units") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+FIGURE 2: Largest Sharing of Semiconductor Chips Across Sector Subcategories: Example - NXP Microprocessors and MCUs
+```{r, warning = FALSE, message = FALSE}
+data <- read.csv('largest_subcategories_diff_group.csv')
+plot <- ggplot(data, aes(x = Category_Pair_Name, y = Count)) +
+  geom_col() +
+  geom_text(aes(label = Count), hjust= 2, vjust = 0.5, colour = "white") +
+  ggtitle("Figure 2: Top 10 Largest Sharing of 
+  Semiconductor Chips Across 
+  Sector Subcategories:
+          \n Example: 
+  NXP Microprocessors and MCUs") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+plot + coord_flip() + labs(x = "Subcategory Pairs", y = "Datasheet Counts") #makes it horizontal
+```
+AUTOMOTIVE CATEGORIES
+FIGURE 3: Shared Semiconductor Chips (Datasheets and Datasheet families) within Automotive Applications: Example - NXP Microprocessors and MCUs
+```{r, warning = FALSE, message = FALSE}
+# load dataset
+data <- read.csv('automotive_commonality.csv')
+
+data <- data %>% 
+  select(-c("AutomatedDriving")) %>% # change this to the column populated of 0's if exists
+  pivot_longer(cols = -c(category_1), names_to = "category_2",  values_to = "overlap") %>% 
+  mutate(overlap = case_when(
+    overlap == 0 ~ NA_integer_, 
+    TRUE ~ overlap
+  )) 
+
+mypal <- c(brewer.pal(9, "YlOrRd"), brewer.pal(9, "YlOrBr")[9])
+
+data %>% 
+  group_by(category_2) %>% 
+  mutate(max_overlap = max(overlap)) %>%
+  ggplot(aes(reorder(category_1, max_overlap), category_2, fill = as.factor(overlap), label = overlap)) + 
+  geom_point(shape = 21, aes(size=overlap)) + 
+  geom_text(vjust=-2) + 
+  guides(fill = FALSE, size = FALSE) + 
+  labs(x = "", y = "") + 
+  theme_minimal() + 
+  scale_fill_manual(values = mypal)  +
+  scale_x_discrete(position = "top") + 
+  ggtitle("Figure 3: Shared Semiconductor Chips within Automotive Applications
+          \n (Datasheets and Datasheet families) 
+          \n Example - NXP Microprocessors and MCUs") + 
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+INDUSTRIAL CATEGORIES
+FIGURE 4:  Shared Semiconductor Chips (Datasheets and Datasheet families) within Industrial Applications: Example - NXP Microprocessors and MCUs
+```{r, warning = FALSE, message = FALSE}
+# load dataset
+data <- read.csv('Industrial_commonality.csv')
+
+data <- data %>% 
+  select(-c("Robotics")) %>% # change this to the column populated of 0's if exists
+  pivot_longer(cols = -c(category_1), names_to = "category_2",  values_to = "overlap") %>% 
+  mutate(overlap = case_when(
+    overlap == 0 ~ NA_integer_, 
+    TRUE ~ overlap
+  )) 
+
+mypal <- c(brewer.pal(9, "YlOrRd"), brewer.pal(9, "YlOrBr")[9])
+
+data %>% 
+  group_by(category_2) %>%
+  mutate(max_overlap = max(overlap)) %>%
+  ggplot(aes(reorder(category_1, max_overlap), category_2, fill = as.factor(overlap), label = overlap)) + 
+  geom_point(shape = 21, aes(size=overlap)) + 
+  geom_text(vjust=-2) + 
+  guides(fill = FALSE, size = FALSE) + 
+  labs(x = "", y = "") + 
+  theme_minimal() + 
+  scale_fill_manual(values = mypal)  +
+  scale_x_discrete(position = "top") + 
+  ggtitle("Figure 4: Shared Semiconductor Chips within Industrial Applications
+          \n (Datasheets and Datasheet families) 
+          \n Example - NXP Microprocessors and MCUs") + 
+  theme(plot.title = element_text(hjust = 0.5))  
+```
