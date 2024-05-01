@@ -4,7 +4,7 @@
 ### Overview ### 
 The purpose of this repository is to scrape the [NXP Website](https://www.nxp.com/search?category=products&start=0&keyword=datasheets&filter=deviceTax%3E%3Ec731&selectedCategory=Products) of only the Processors and Microcontrollers to identify design commonalities of overlapping categories that contain datasheets. 
 
-This is intended to serve as a proof of concept that it is possible to identify design commonalities among datasheets. 
+This is intended to serve as a proof of concept that it is possible to identify design commonalities among datasheets, ultimately in hopes to recommend specific industries to collaborate to combat the semiconductor shortage. 
 
 NXP's website is dynamic, so this codebase uses Python and [Selenium's webdriver](https://www.selenium.dev/documentation/webdriver/) that refreshes NXP's website every second to scrape all the urls to the datasheets.
 
